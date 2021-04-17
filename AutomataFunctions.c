@@ -2,6 +2,68 @@
 #include <stdlib.h>
 #include "AutomataFunctions.h"
 
+graph lectureDuFichier()
+{
+	graph Automata;
+	FILE* fichier=NULL;
+	printf("Le programme va utiliser l'automate qui se trouve au fichier \"graphe.txt\"\n");
+	fichier=fopen("graphe.txt","r");
+	if (fichier==NULL)
+	{
+		exit(0);
+	}
+	Automata.startingNodes=findStart(fichier,&Automata.startSize);
+	Automata.endingNodes=findEnd(fichier,&Automata.endSize);
+	Automata.linksNumber=numberOfLinks(fichier);
+	Automata.Links = lectureDeGraphe(fichier,Automata.linksNumber);
+	fclose(fichier);
+	return Automata;
+}
+
+void viderLeBuffer(char input)
+{
+	while(input!=10)
+	scanf("%c",&input);
+}
+
+graph lectureManuelle()
+{
+	graph Automata;
+	int i;
+	char input=0;
+	printf("Quel est le nombre des etats initiaux ?\n");
+	scanf("%d",&Automata.startSize);
+	Automata.startingNodes=(int*)malloc(sizeof(int)*Automata.startSize);
+	for(i=0;i<Automata.startSize;i++)
+	{
+		printf("Entrez le numero de l'état initial numero %d\n",(i+1));
+		scanf("%d",(Automata.startingNodes+i));
+	}
+	printf("Quel est le nombre des etats finaux ?\n");
+	scanf("%d",&Automata.endSize);
+	Automata.endingNodes=(int*)malloc(sizeof(int)*Automata.endSize);
+	for(i=0;i<Automata.endSize;i++)
+	{
+		printf("Entrez le numero de l'état final numero %d\n",(i+1));
+		scanf("%d",(Automata.endingNodes+i));
+	}
+	printf("Quel est le nombre des arcs ?\n");
+	scanf("%d",&Automata.linksNumber);
+	Automata.Links=(link*)malloc(sizeof(link)*Automata.linksNumber);
+	for(i=0;i<Automata.linksNumber;i++)
+	{
+		printf("Entrez l'etat de depart de l'arc numero %d\n",(i+1));
+		scanf("%d",&((Automata.Links+i)->startNode));
+		printf("Entrez l'etat d'arrivee l'arc numero %d\n",(i+1));
+		scanf("%d",&((Automata.Links+i)->endNode));
+		printf("Entrez le poid de l'arc numero %d\n",(i+1));
+		viderLeBuffer(input);
+		scanf("%c",&input);
+		(Automata.Links+i)->weight=input;
+	}
+	return Automata;
+}
+
 int lectureDeNombre (FILE* fichier, int firstNumber)
 {
 	char B=0;
@@ -141,7 +203,7 @@ int traverseCheck (graph g, char* input, int posInput, int Node)//bool
 {
 	int i=0;
 	int result = 0;//bool
-	if ((input[posInput]==0)||(posInput==100))
+	if ((input[posInput]==0)||(posInput==TAILLE_MAX_DU_INPUT))
 	{
 		while((i<g.endSize)&&(Node!=*(g.endingNodes+i)))
 			i++;
