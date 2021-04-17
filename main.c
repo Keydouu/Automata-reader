@@ -44,7 +44,7 @@ int main()
 	for(i=0;i<TAILLE_MAX_DU_INPUT;i++)
 	input[i]=0;
 	printf("Veuillez entrer le mot à lire\n");
-	scanf("%s",&input);
+	scanf("%s",input);
 	i=0;
 	while ((traverseCheck(Automata,input,0,*(Automata.startingNodes+i))==0)&&(i<Automata.startSize))
         i++;
