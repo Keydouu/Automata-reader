@@ -2,21 +2,13 @@
 #include <stdlib.h>
 #include "AutomataFunctions.h"
 
-graph lectureDuFichier()
+graph lectureDuFichier(FILE* fichier)
 {
 	graph Automata;
-	FILE* fichier=NULL;
-	printf("Le programme va utiliser l'automate qui se trouve au fichier \"graphe.txt\"\n");
-	fichier=fopen("graphe.txt","r");
-	if (fichier==NULL)
-	{
-		exit(0);
-	}
 	Automata.startingNodes=findStart(fichier,&Automata.startSize);
 	Automata.endingNodes=findEnd(fichier,&Automata.endSize);
 	Automata.linksNumber=numberOfLinks(fichier);
 	Automata.Links = lectureDeGraphe(fichier,Automata.linksNumber);
-	fclose(fichier);
 	return Automata;
 }
 
@@ -31,14 +23,26 @@ graph lectureManuelle()
 	graph Automata;
 	int i;
 	char input=0;
+	FILE* fichier=NULL;
+	fichier=fopen("derniereAutomateUtilisee.txt","w+");
+	if (fichier==NULL)
+		{
+			exit(0);
+		}
 	printf("Quel est le nombre des etats initiaux ?\n");
 	scanf("%d",&Automata.startSize);
 	Automata.startingNodes=(int*)malloc(sizeof(int)*Automata.startSize);
+	fprintf(fichier, "S = ");
 	for(i=0;i<Automata.startSize;i++)
 	{
 		printf("Entrez le numero de l'état initial numero %d\n",(i+1));
 		scanf("%d",(Automata.startingNodes+i));
+		if (i==0)
+		fprintf(fichier, "%d",*(Automata.startingNodes+i));
+		else
+		fprintf(fichier, ",%d",*(Automata.startingNodes+i));
 	}
+	fprintf(fichier, ";\nE = ");
 	printf("Quel est le nombre des etats finaux ?\n");
 	scanf("%d",&Automata.endSize);
 	Automata.endingNodes=(int*)malloc(sizeof(int)*Automata.endSize);
@@ -46,7 +50,12 @@ graph lectureManuelle()
 	{
 		printf("Entrez le numero de l'état final numero %d\n",(i+1));
 		scanf("%d",(Automata.endingNodes+i));
+		if (i==0)
+		fprintf(fichier, "%d",*(Automata.endingNodes+i));
+		else
+		fprintf(fichier, ",%d",*(Automata.endingNodes+i));
 	}
+	fprintf(fichier, ";\nA :");
 	printf("Quel est le nombre des arcs ?\n");
 	scanf("%d",&Automata.linksNumber);
 	Automata.Links=(link*)malloc(sizeof(link)*Automata.linksNumber);
@@ -60,6 +69,7 @@ graph lectureManuelle()
 		viderLeBuffer(input);
 		scanf("%c",&input);
 		(Automata.Links+i)->weight=input;
+		fprintf(fichier, "\n%d->%d (%c);",(Automata.Links+i)->startNode,(Automata.Links+i)->endNode,(Automata.Links+i)->weight);
 	}
 	return Automata;
 }
