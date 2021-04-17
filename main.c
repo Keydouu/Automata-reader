@@ -4,28 +4,30 @@
 
 int main()
 {
-    graph Automata;
-	FILE* fichier=NULL;
+	graph Automata;
 	int i=0;
-	char input[TAILLE_MAX_DU_INPUT];
-	fichier=fopen("graphe.txt","r");
-	if (fichier==NULL)
+	char input[TAILLE_MAX_DU_INPUT],yesOrNo=0;
+	while((yesOrNo!='y')&&(yesOrNo!='Y')&&(yesOrNo!='n')&&(yesOrNo!='N'))
 	{
-		exit(0);
-    }
-	Automata.startingNodes=findStart(fichier,&Automata.startSize);
-	Automata.endingNodes=findEnd(fichier,&Automata.endSize);
-	Automata.linksNumber=numberOfLinks(fichier);
-	Automata.Links = lectureDeGraphe(fichier,Automata.linksNumber);
+		printf("Voulez vous entrer manuellement l'automate ? [Y/N]\n");
+		scanf("%c",&yesOrNo);
+		viderLeBuffer(yesOrNo);
+		system("clear");
+	}
+	if((yesOrNo=='Y')||(yesOrNo=='y'))
+		Automata=lectureManuelle();
+	else
+		Automata=lectureDuFichier();
 	for(i=0;i<TAILLE_MAX_DU_INPUT;i++)
-        input[i]=0;
+	input[i]=0;
+	printf("Veuillez entrer le mot à lire\n");
 	scanf("%s",&input);
 	i=0;
 	while ((traverseCheck(Automata,input,0,*(Automata.startingNodes+i))==0)&&(i<Automata.startSize))
         i++;
-    if(i>=Automata.startSize)
-        printf("l'automate ne peut pas pas lire ce mot");
-    else
-        printf("lecture reussie");
+	if(i>=Automata.startSize)
+		printf("l'automate ne peut pas pas lire ce mot");
+	else
+		printf("lecture reussie");
     return 0;
 }
