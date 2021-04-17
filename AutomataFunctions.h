@@ -21,7 +21,7 @@ int* findEnd(FILE* fichier,int* endSize);
 int numberOfLinks(FILE* fichier);
 link* lectureDeGraphe(FILE* fichier,int Size);
 int traverseCheck (graph g, char* input, int posInput, int Node);//bool
-graph lectureDuFichier();
+graph lectureDuFichier(FILE* fichier);
 void viderLeBuffer(char input);
 graph lectureManuelle();
 #endif
